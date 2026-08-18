@@ -65,3 +65,5 @@ management:
   endpoint:
     health:
       show-details: always
+my:
+ properties: order-github-default
