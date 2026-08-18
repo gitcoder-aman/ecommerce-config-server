@@ -1,0 +1,44 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: order-service
+              uri: lb://ORDER-SERVICE
+              predicates:
+                - Path=/api/v1/orders/**
+              filters:
+                - StripPrefix=2   # it is not allowed /api/v1 in order service or any services where another api calling
+                - name: LoggingOrdersFilter
+                - name: Authentication
+                  args:
+                    isEnabled: true
+                - name: Authorization
+                  args:
+                    allowedRoles: ADMIN,SUPER_ADMIN
+                    isEnabled: true
+            - id: inventory-service
+              uri: lb://INVENTORY-SERVICE
+              predicates:
+                - Path=/api/v1/inventory/**
+              filters:
+                - StripPrefix=2
+                - AddRequestHeader=X-Custom-Header, Aman
+                - name: Authentication
+          #         - RedirectTo=302,https://youtube.com   when we have to hit inventory then redirect to youtube website
+
+
+
+server:
+  port: 8080
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+jwt:
+  secretKey: a-string-secret-at-least-256-bits-long
