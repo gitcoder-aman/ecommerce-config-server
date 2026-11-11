@@ -1,7 +1,9 @@
-ORDER_SERVICE_URI=http://order-service
-INVENTORY_SERVICE_URI=http://inventory-service
+ORDER_SERVICE_URI: http://order-service
+INVENTORY_SERVICE_URI: http://inventory-service
 
+# FIX: Fully disable Eureka client in k8s profile (discovery-service is not deployed in K8s)
 eureka:
   client:
+    enabled: false
     register-with-eureka: false
     fetch-registry: false
